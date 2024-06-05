@@ -29,5 +29,5 @@ class CourseCenter(models.Model):
     rating = models.FloatField()
     institutionAge = models.IntegerField()
     domain = ArrayField(models.CharField(max_length=100),null=True,blank=True)
-    def __str__(self):
-        return institutionName
+    # def __str__(self):
+    #     return institutionName

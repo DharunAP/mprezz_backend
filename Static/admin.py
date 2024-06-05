@@ -3,4 +3,4 @@ from .models import *
 
 admin.site.register(Student)
 admin.site.register(CourseCenter)
-# Register your models here.
+
