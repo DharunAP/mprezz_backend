@@ -15,7 +15,7 @@ class Student(models.Model):
     domain = models.CharField(max_length=100)
     organization = models.CharField(max_length=100)
     def __str__(self):
-        return str(self.firstname)
+        return str(self.first_name)
 
 
 class CourseCenter(models.Model):
@@ -31,4 +31,20 @@ class CourseCenter(models.Model):
     institution_age = models.IntegerField()
     domain = ArrayField(models.CharField(max_length=100),null=True,blank=True)
     def __str__(self):
-        return str(self.institutionName)
+        return str(self.institution_name)
+    
+class CourseDetails (models.Model) :
+    course_name = models.CharField(max_length=300)
+    domain = models.CharField(max_length=200)
+    mode = models.CharField(max_length=150)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    price = models.CharField(max_length=100)
+    discount = models.FloatField()
+    institution = models.CharField(max_length=300)
+    location = models.CharField(max_length=500)
+    certification = models.BooleanField(default=False)
+    no_of_seats = models.IntegerField()
+    description = models.TextField()
+    expectations = models.TextField()
+    requirements = models.TextField()
