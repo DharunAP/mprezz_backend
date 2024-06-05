@@ -39,16 +39,6 @@ def CourseCenterCreation(request):
     except Exception as e:
         print(e)
         return Response({"message":"Error "+str(e)},status=500)
-    
-# @api_view(['POST'])
-# def UserLogin (request) :
-#     try :
-#         print('hello')
-
-#     except Exception as ex:
-#         print(ex ,' the exception')
-#         return Response({'message' : 'Some error occurre'},status=500)
-    
 
 @api_view(['POST'])
 def UserLogin(request):
@@ -62,10 +52,10 @@ def UserLogin(request):
         user = None
         if user_role == 'CourseProvider':
                  # Request entered where the user exist
-            user = CourseCenter.objects.filter(email_id=email).first()
+            user = CourseCenter.objects.filter(email=email).first()
 
         elif user_role == 'Student':
-            user = Student.objects.filter(email_id=email).first()
+            user = Student.objects.filter(email=email).first()
             
         else:
             return Response({'message' : "User Entered Invalid Role"},status = 500)
