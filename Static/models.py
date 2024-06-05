@@ -48,3 +48,6 @@ class CourseDetails (models.Model) :
     description = models.TextField()
     expectations = models.TextField()
     requirements = models.TextField()
+
+    def __str__(self) :
+        return str(self.course_name)
