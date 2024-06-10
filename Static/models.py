@@ -41,13 +41,18 @@ class CourseDetails (models.Model) :
     end_date = models.DateField()
     price = models.CharField(max_length=100)
     discount = models.FloatField()
-    institution = models.CharField(max_length=300)
+    institution = models.ForeignKey(CourseCenter,on_delete=models.CASCADE)
     location = models.CharField(max_length=500)
     certification = models.BooleanField(default=False)
     no_of_seats = models.IntegerField()
-    description = models.TextField()
-    expectations = models.TextField()
-    requirements = models.TextField()
+    description = ArrayField(models.TextField())
+    expectations = ArrayField(models.TextField())
+    requirements = ArrayField(models.TextField())
 
     def __str__(self) :
         return str(self.course_name)
+
+class Enrollment(models.Model):
+    student = models.ForeignKey(Student,on_delete=models.CASCADE)
+    course = models.ForeignKey(CourseDetails,on_delete=models.CASCADE)
+    is_amount_paid = models.BooleanField(default=False)

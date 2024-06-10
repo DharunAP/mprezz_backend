@@ -1,10 +1,24 @@
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from Static.models import CourseDetails
+from Static.models import CourseDetails, CourseCenter, Enrollment
+from .serializer import CourseSerializer
 
-@api_view(['GET'])
+def createCourse(data):
+    try:
+        # data['institution'] = CourseCenter.objects.get(id = data['institution'])
+        serializer = CourseSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'message':'Course Created Sucessfully'},status=200)
+        return Response({'message':'Invalid credentials','error':serializer.errors},status=400)
+    except Exception as error:
+        return Response({'message':'Error creating a course','error':str(error)},status=500)
+
+@api_view(['POST','GET'])
 def ListAllCourses (request) :
+    if request.method=='POST':
+        return createCourse(request.data)
     try :
         print('all')
 
@@ -37,3 +51,14 @@ def ListAllCourses (request) :
     except Exception as exp :
         return Response ({'message' : 'Error while listing',
                           'Error' : str(exp)},status=500)
+
+@api_view(['POST'])
+def enrollCourse(request):
+    try:
+        Enrollment.objects.create(
+            student_id = request.data['student'],
+            course = request.data['course'],
+        )
+        return Response({'message':'Course Enrolled'},status=200)
+    except Exception as error:
+        return Response({'message':'Error while enrolling'},status=500)
