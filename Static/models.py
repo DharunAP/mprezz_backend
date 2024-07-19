@@ -17,7 +17,6 @@ class Student(models.Model):
     def __str__(self):
         return str(self.first_name)
 
-
 class CourseCenter(models.Model):
     institution_name = models.CharField(max_length=100)
     owner_name = models.CharField(max_length=100)
@@ -45,14 +44,21 @@ class CourseDetails (models.Model) :
     location = models.CharField(max_length=500)
     certification = models.BooleanField(default=False)
     no_of_seats = models.IntegerField()
+    filled_seats = models.IntegerField(default = 0)
     description = ArrayField(models.TextField())
     expectations = ArrayField(models.TextField())
     requirements = ArrayField(models.TextField())
 
     def __str__(self) :
-        return str(self.course_name)
+        return str(self.course_name) + ' by ' + str(self.institution)
 
 class Enrollment(models.Model):
     student = models.ForeignKey(Student,on_delete=models.CASCADE)
     course = models.ForeignKey(CourseDetails,on_delete=models.CASCADE)
     is_amount_paid = models.BooleanField(default=False)
+
+class AuthToken(models.Model) :
+    user_type = models.CharField(max_length=100)
+    referenceId = models.IntegerField()
+    jwt_token = models.CharField(primary_key=True,max_length=500)
+    created_date = models.DateField(auto_now_add=True)
