@@ -1,8 +1,12 @@
 from rest_framework.response import Response
+from django.shortcuts import render,redirect
 from rest_framework.decorators import api_view
 from Static.models import Student,CourseCenter
 from .Serializers import StudentSerializer,CourseCenterSerializer
 from .jwtValidation import *
+from .assets import sendVerificationMail, sendPasswordMail
+from Static.chiper import encryptData,decryptData
+from Static.routes import VERIFY_MAIL_ROUTE_COURSE_CENTER,VERIFY_MAIL_ROUTE_STUDENT
 
 @api_view(['POST'])
 def SignupStudent(request):
@@ -17,6 +21,8 @@ def SignupStudent(request):
             serializer.save()
             instance = Student.objects.get(email_id=request.data['email_id'])
             jwt_token = get_or_create_jwt(instance, 'Student', instance.email_id)
+
+            sendVerificationMail(VERIFY_MAIL_ROUTE_STUDENT+"?id="+encryptData(instance.id),request.data['email_id']) # sending the verification mail
             return Response({"message":"Student created","token":str(jwt_token)},status=200)
         print(serializer.errors)
         return Response({"message":"Invalid Serializer"},status=400)
@@ -24,10 +30,34 @@ def SignupStudent(request):
         print(e)
         return Response({"message":"Error "+str(e)},status=500)
 
+@api_view(['GET'])
+def VerifyStudent(request):
+    try:
+        id = decryptData(request.GET.get('id'))
+        student = Student.objects.get(id = id)
+        student.is_email_verified = True
+        student.save()
+        return Response({'message':'Student verified successfully'},status=200)
+    except Exception as e:
+        print(str(e))
+        return Response({'error':str(e),'message':'Error verifying student mail'},status=500)
+
+@api_view(['GET'])
+def VerifyCourseCenter(request):
+    try:
+        id = decryptData(request.GET.get('id'))
+        course_center = CourseCenter.objects.get(id = id)
+        course_center.is_email_verified = True
+        course_center.save()
+        return Response({'message':'Course center verified successfully'},status=200)
+    except Exception as e:
+        print(str(e))
+        return Response({'error':str(e),'message':'Error verifying Course center mail'},status=500)
+
 @api_view(['POST'])
 def CourseCenterCreation(request):
     try:
-        if CourseCenter.objects.filter(email=request.data['email']).exists():
+        if CourseCenter.objects.filter(email_id=request.data['email_id']).exists():
             return Response({"message":"EMAIL_ALREADY_EXISTS"},status=400)
         serializer = CourseCenterSerializer(data=request.data)
         valid=serializer.is_valid()
@@ -35,7 +65,10 @@ def CourseCenterCreation(request):
             # instance = Student.objects.create(email_id=request.data['email_id'],password=make_password(request.data['password']))
             # instance.save()
             serializer.save()
+            instance = CourseCenter.objects.get(email_id=request.data['email_id'])
             jwt_token = get_or_create_jwt(instance, 'CourseProvider', instance.email_id)
+            
+            sendVerificationMail(VERIFY_MAIL_ROUTE_COURSE_CENTER+"?id="+encryptData(instance.id),request.data['email_id']) # sending the verification mail
             return Response({"message":"CourseCenter created",'token':str(jwt_token)},status=200)
         print(serializer.errors)
         return Response({"message":"Invalid Serializer"},status=400)
@@ -116,3 +149,40 @@ def UserLogin(request):
     except Exception as ex:
         print(ex)
         return  Response({'message' : 'Error in Login'}, status = 500)
+
+@api_view(['POST'])
+def forget_password_student(request):
+    try:
+        student = Student.objects.get(email_id=request.data['email_id'])
+        sendPasswordMail('change_password/student/'+encryptData(student.id),student.email_id)
+        return Response({'message':'Mail sent for changing password'},status=200)
+    except Exception as e:
+        print(str(e))
+        return Response({'error':str(e),'message':'Error sending password changing mail'},status=500)
+
+@api_view(['POST'])
+def forget_password_course_center(request):
+    try:
+        course_center = CourseCenter.objects.get(email_id=request.data['email_id'])
+        sendPasswordMail('change_password/course_center/'+encryptData(course_center.id),course_center.email_id)
+        return Response({'message':'Mail sent for changing password'},status=200)
+    except Exception as e:
+        print(str(e))
+        return Response({'error':str(e),'message':'Error sending password changing mail'},status=500)
+
+def change_password(request,role,id):
+    user_id = decryptData(id)
+    if role=='student':
+        user = Student.objects.get(id = user_id)
+        name = user.first_name+" "+user.last_name
+    else:
+        user = CourseCenter.objects.get(id = user_id)
+        name = user.institution_name
+    if request.method=='POST':
+        if(request.POST.get('Password')==request.POST.get('Confirm_Passsword')):
+            print('same')
+            user.password = request.POST.get('Password')
+            user.save()
+            return redirect('https://mprezz.com/login')
+        return render(request,'template/password.html',{"error":"Passwords does not match",'name':name})
+    return render(request,'template/password.html',{"error":None,"name":name})

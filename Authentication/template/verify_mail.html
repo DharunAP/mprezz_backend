@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify your email address</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: silver;
+            margin: 0;
+            padding: 2%;
+        }
+        .container {
+            max-width: 600px;
+            margin: 10px auto;
+            background-color: #F6F6F6;
+            /* background-color: white; */
+            padding: 20px 35px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            padding: 5px;
+            /* background-color: #fff9f9; */
+        }
+        .header img {
+            width: 25%;
+        }
+        .header h1 {
+            font-size: 24px;
+            color: #333333;
+        }
+        .content {
+            text-align: center;
+            background-color: #ffffff;
+            padding-top: 1%;
+        }
+        .content img {
+            width: 100%;
+            /* margin: 20px 0; */
+        }
+        .content h2 {
+            font-size: 20px;
+            color: #333333;
+        }
+        .content p {
+            font-size: 16px;
+            color: #555555;
+            font-weight: 600;
+            padding: 10px;
+            /* margin: 10px 0;S */
+        }
+        .content a{
+            text-decoration: none;
+        }
+        .button {
+            padding: 20px 0;
+            background-color: #ffffff;
+            /* background-color: red; */
+        }
+        .button a {
+            background-color: black;   
+            color: #ffffff;
+            padding: 15px 25px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .footer {
+            text-align: center;
+            padding: 10px;
+            font-size: 14px;
+            
+            background-color: #ffffff;
+            color: #aaaaaa;
+        }
+        .footer a {
+            text-decoration: none;
+            color: #5a67d8;
+        }
+        .social-icons img {
+            width: 5%;
+            margin: 0 2%;
+        }
+        /* Media Queries for Mobile Responsiveness */
+        @media only screen and (max-width: 600px) {
+            body{
+                padding: 0;
+            }
+            .container {
+                width: 100%;
+                height: 100%;
+                padding: 10px;
+            }
+            .header h1 {
+                font-size: 20px;
+            }
+            .content h2 {
+                font-size: 18px;
+            }
+            .content p {
+                font-size: 14px;
+            }
+            .button a {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+            .footer {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="https://drive.google.com/thumbnail?id=1cMZRGgNnLoT4260dTXnlXuZs2V-Pc1bg" alt="Mprezz Logo">
+        </div>
+        <div class="content">
+            <p>Welcome to <a href="https://www.Mprezz.com" style="color: #5a67d8;">Mprezz.com</a></p>
+            <p>Please click the button below to confirm your email address and activate your account.</p>
+            <div class="button">
+                <a href="{{BASE_URL}}{{verifyMail}}">CONFIRM EMAIL</a>
+            </div>
+        </div>
+        <div class="footer">
+            <p>If you received this in error, simply ignore this email and do not click the button.</p>
+            <div class="social-icons">
+                <a href="https://www.linkedin.com/company/Mprezz"><img src="https://drive.google.com/thumbnail?id=1nlskrN5Dx078VqVP3ILQiE9EGSSI70os" alt="LinkedIn"></a>
+                <a href="https://www.instagram.com/Mprezz"><img src="https://drive.google.com/thumbnail?id=1r0sMeip07AgEC_HlejyUvjii3AiNG3a4" alt="Instagram"></a>
+                <a href="https://twitter.com/Mprezz"><img src="https://drive.google.com/thumbnail?id=1QZWucfKum5mFvAyTLzZTP4cdAlmkjD4W" alt="Twitter"></a>
+            </div>
+            <p>&copy; 2024 Mprezz. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>
