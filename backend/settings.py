@@ -132,9 +132,15 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME':'Mprezz',
-        'USER':'Django',
-        'PASSWORD':'django',
+        'NAME': 'verceldb',
+        'USER': 'default',
+        'PASSWORD': os.environ['DB_PASSWORD'],
+        'HOST': os.environ['DB_URL'],
+        'PORT': '5432', 
+        'OPTIONS': {
+            'sslmode': 'require',
+            'connect_timeout': 15,
+        }
     }
 }
 
