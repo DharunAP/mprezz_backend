@@ -154,7 +154,10 @@ def UserLogin(request):
 @api_view(['POST'])
 def forget_password_student(request):
     try:
-        student = Student.objects.get(email_id=request.data['email_id'])
+        student = Student.objects.filter(email_id=request.data['email_id'])
+        if not student.exists():
+            return Response({'message':'User not found'},status=404)
+        student=student[0]
         sendPasswordMail('change_password/student/'+encryptData(student.id),student.email_id)
         return Response({'message':'Mail sent for changing password'},status=200)
     except Exception as e:
@@ -164,7 +167,10 @@ def forget_password_student(request):
 @api_view(['POST'])
 def forget_password_course_center(request):
     try:
-        course_center = CourseCenter.objects.get(email_id=request.data['email_id'])
+        course_center = CourseCenter.objects.filter(email_id=request.data['email_id'])
+        if not course_center.exists():
+            return Response({'message':'User not found'},status=404)
+        course_center = course_center[0]
         sendPasswordMail('change_password/course_center/'+encryptData(course_center.id),course_center.email_id)
         return Response({'message':'Mail sent for changing password'},status=200)
     except Exception as e:
