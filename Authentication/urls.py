@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import *
-from Static.routes import *
+from core.routes import *
 
 urlpatterns = [
     path('studentSignUp/',SignupStudent,name = 'SignupStudent'),

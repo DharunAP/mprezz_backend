@@ -1,6 +1,6 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from Static.models import Student,CourseCenter,CourseDetails, Enrollment
+from core.models import Student,CourseCenter,CourseDetails, Enrollment
 from Authentication.jwtValidation import *
 
 @api_view(['GET'])

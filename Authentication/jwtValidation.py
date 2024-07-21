@@ -1,4 +1,4 @@
-from Static.models import Student, CourseCenter, AuthToken
+from core.models import Student, CourseCenter, AuthToken
 import pytz
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 from datetime import datetime

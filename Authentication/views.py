@@ -1,12 +1,12 @@
 from rest_framework.response import Response
 from django.shortcuts import render,redirect
 from rest_framework.decorators import api_view
-from Static.models import Student,CourseCenter
+from core.models import Student,CourseCenter
 from .Serializers import StudentSerializer,CourseCenterSerializer
 from .jwtValidation import *
 from .assets import sendVerificationMail, sendPasswordMail
-from Static.chiper import encryptData,decryptData
-from Static.routes import VERIFY_MAIL_ROUTE_COURSE_CENTER,VERIFY_MAIL_ROUTE_STUDENT
+from core.chiper import encryptData,decryptData
+from core.routes import VERIFY_MAIL_ROUTE_COURSE_CENTER,VERIFY_MAIL_ROUTE_STUDENT
 
 @api_view(['POST'])
 def SignupStudent(request):
@@ -21,9 +21,9 @@ def SignupStudent(request):
             serializer.save()
             instance = Student.objects.get(email_id=request.data['email_id'])
             jwt_token = get_or_create_jwt(instance, 'Student', instance.email_id)
-
-            sendVerificationMail(VERIFY_MAIL_ROUTE_STUDENT+"?id="+encryptData(instance.id),request.data['email_id']) # sending the verification mail
-            return Response({"message":"Student created","token":str(jwt_token)},status=200)
+            encryptedID = encryptData(instance.id)
+            sendVerificationMail(VERIFY_MAIL_ROUTE_STUDENT+"?id="+encryptedID,request.data['email_id']) # sending the verification mail
+            return Response({"message":"Student created","token":str(jwt_token),"id":encryptedID},status=200)
         print(serializer.errors)
         return Response({"message":"Invalid Serializer"},status=400)
     except Exception as e:

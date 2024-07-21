@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from Static.models import Student,CourseCenter
+from core.models import Student,CourseCenter
 
 class StudentSerializer(serializers.ModelSerializer):
     class Meta:

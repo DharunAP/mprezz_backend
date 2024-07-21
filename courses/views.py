@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from Static.models import CourseDetails, CourseCenter, Enrollment
+from core.models import CourseDetails, CourseCenter, Enrollment
 from .serializer import CourseSerializer
 from Authentication.jwtValidation import *
 import datetime

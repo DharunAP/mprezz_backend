@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'Authentication',
     'courses',
     'details',
-    'Static',
+    'RazorPay',
+    'core',
 ]
 
 # for jwt
