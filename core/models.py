@@ -27,7 +27,7 @@ class CourseCenter(models.Model):
     email_id = models.EmailField(unique=True)
     password = models.CharField(max_length=50)
     phone_number = models.CharField(max_length=15)
-    rating = models.FloatField()
+    rating = models.FloatField(default=0)
     institution_age = models.IntegerField()
     domain = ArrayField(models.CharField(max_length=100),null=True,blank=True)
     is_email_verified = models.BooleanField(default=False)
