@@ -37,7 +37,7 @@ def VerifyStudent(request):
         student = Student.objects.get(id = id)
         student.is_email_verified = True
         student.save()
-        return Response({'message':'Student verified successfully'},status=200)
+        return redirect('https://mprezz.com/login/')
     except Exception as e:
         print(str(e))
         return Response({'error':str(e),'message':'Error verifying student mail'},status=500)
@@ -49,7 +49,7 @@ def VerifyCourseCenter(request):
         course_center = CourseCenter.objects.get(id = id)
         course_center.is_email_verified = True
         course_center.save()
-        return Response({'message':'Course center verified successfully'},status=200)
+        return redirect('https://mprezz.com/login/')
     except Exception as e:
         print(str(e))
         return Response({'error':str(e),'message':'Error verifying Course center mail'},status=500)
@@ -67,9 +67,9 @@ def CourseCenterCreation(request):
             serializer.save()
             instance = CourseCenter.objects.get(email_id=request.data['email_id'])
             jwt_token = get_or_create_jwt(instance, 'CourseProvider', instance.email_id)
-            
-            sendVerificationMail(VERIFY_MAIL_ROUTE_COURSE_CENTER+"?id="+encryptData(instance.id),request.data['email_id']) # sending the verification mail
-            return Response({"message":"CourseCenter created",'token':str(jwt_token)},status=200)
+            encryptedID = encryptData(instance.id)
+            sendVerificationMail(VERIFY_MAIL_ROUTE_COURSE_CENTER+"?id="+encryptedID,request.data['email_id']) # sending the verification mail
+            return Response({"message":"CourseCenter created",'token':str(jwt_token),'id':encryptedID},status=200)
         print(serializer.errors)
         return Response({"message":"Invalid Serializer"},status=400)
     except Exception as e:

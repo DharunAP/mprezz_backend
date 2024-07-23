@@ -30,10 +30,11 @@ def getUserDetails(request):
         return {'type':'Invalid User'}
     # print(authToken.jwt_token)
     user = None
-    if authToken.user_type=='studetn':
+    print(authToken.user_type)
+    if authToken.user_type=='student':
         print(authToken.referenceId,' ref id')
         user = Student.objects.get(id = authToken.referenceId)
-    elif authToken.user_type=='course_center':
+    elif authToken.user_type=='CourseProvider':
         user = CourseCenter.objects.get(id = authToken.referenceId)
     return {'type':authToken.user_type,'id':authToken.referenceId,'user':user}
 
