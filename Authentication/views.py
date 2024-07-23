@@ -100,6 +100,7 @@ def UserLogin(request):
                     return Response({
                         'message': 'Logged in Successfully',  # Using 'message' key
                         'token' : token,
+                        'id':encryptData(user.id),
                         'data' : {
                             'name' : user.institution_name,
                             # 'user_id' : encryptData(user.id),  # encoding the user id
