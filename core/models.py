@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
+from django.utils import timezone
 
 class Student(models.Model):
     first_name = models.CharField(max_length=50)
@@ -54,17 +55,8 @@ class CourseDetails (models.Model) :
     def __str__(self) :
         return str(self.course_name) + ' by ' + str(self.institution)
 
-class Enrollment(models.Model):
-    student = models.ForeignKey(Student,on_delete=models.CASCADE)
-    course = models.ForeignKey(CourseDetails,on_delete=models.CASCADE)
-    is_amount_paid = models.BooleanField(default=False)
-
-from django.db import models
-from django.db import models
-from django.utils import timezone
-
 class Payments(models.Model):
-    payment_id = models.CharField(max_length=100, unique=True)
+    payment_id = models.CharField(max_length=100, unique=True, primary_key=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(max_length=50, choices=[('pending', 'Pending'), ('completed', 'Completed'), ('failed', 'Failed')])
     payment_method = models.CharField(max_length=50)
@@ -76,6 +68,10 @@ class Payments(models.Model):
     def __str__(self):
         return f"{self.payment_id} - {self.status}"
 
+class Enrollment(models.Model):
+    student = models.ForeignKey(Student,on_delete=models.CASCADE)
+    course = models.ForeignKey(CourseDetails,on_delete=models.CASCADE)
+    payment = models.ForeignKey(Payments,on_delete=models.CASCADE)
 
 class AuthToken(models.Model) :
     user_type = models.CharField(max_length=100)
