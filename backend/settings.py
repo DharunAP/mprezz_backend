@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'Authentication',
     'courses',
     'details',
-    'RazorPay',
+    'payments',
     'core',
 ]
 
