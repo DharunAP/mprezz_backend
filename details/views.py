@@ -47,6 +47,13 @@ def getAllCourses(request):
     except Exception as e:
         return Response({'message':'Error '+str(e)},status=500)
 
+@api_view(['POST'])
+def getAllEnrolledStudents(request,id):
+    try:
+        return
+    except Exception as e:
+        return
+
 @api_view(['GET'])
 def getAllEnrolledCourses(request):
     try:

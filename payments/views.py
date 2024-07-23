@@ -61,6 +61,7 @@ def create_order(request):
     try:
         userDetails = getUserDetails(request)  # getting the details of the requested user
         if userDetails['type']!='Student':      # chekking weather he is allowed inside this endpoint or not
+            print('not a stud')
             return Response({'message':"ACCESS DENIED"},status=400)
         print(userDetails)
         if not userDetails['user'].is_email_verified:
@@ -104,7 +105,7 @@ def creteEnrollment(request):
         payment = Payments.objects.filter(payment_id=request.data['payment_id'])
         if not payment.exists():
             return Response({'message':'Payment does not exists'},status=400)
-        course = CourseDetails.objects.filter(id = request.data['id'])
+        course = CourseDetails.objects.filter(id = request.data['course_id'])
         if not course.exists():
             return Response({'message':'Course does not exists'},status=400)
         Enrollment.objects.create(

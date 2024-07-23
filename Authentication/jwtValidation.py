@@ -31,7 +31,7 @@ def getUserDetails(request):
     # print(authToken.jwt_token)
     user = None
     print(authToken.user_type)
-    if authToken.user_type=='student':
+    if authToken.user_type=='Student':
         print(authToken.referenceId,' ref id')
         user = Student.objects.get(id = authToken.referenceId)
     elif authToken.user_type=='CourseProvider':
@@ -83,7 +83,7 @@ def get_or_create_jwt(user_data, user_role, email):
 
 def validate_token(request):
     authorization_header = request.headers.get('Authorization')
-    
+    print(request.headers)
     if authorization_header:
         if authorization_header.startswith('Bearer '):
             access_token = authorization_header.split(' ')[1]
