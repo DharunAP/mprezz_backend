@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from rest_framework import status
 import json
 from datetime import datetime
+from django.utils import timezone
 
 clientOBJ = client()
 
@@ -29,21 +30,18 @@ def verify_payment(request):
             if response:
                 payment_data = jsonData['payload']['payment']['entity']
 
-                payment_timestamp = datetime.fromtimestamp(payment_data['created_at'])
-                print(payment_data)
+                created_at = timezone.datetime.fromtimestamp(payment_data['created_at']).astimezone()
 
-                payment, created = Payments.objects.update_or_create(
-                defaults={
-                    'payment_id': payment_data['id'],
-                    'amount': payment_data['amount'] / 100,  # Convert from paise to rupees
-                    'status': payment_data['status'],
-                    'payment_method': payment_data['method'],
-                    'email': payment_data.get('email', ''),
-                    'contact': payment_data.get('contact', ''),
-                    'order_id': payment_data.get('order_id', ''),
-                    'created_at': payment_timestamp
-                }
-            )
+                created = Payments.objects.create(
+                    payment_id=payment_data['id'],
+                    amount=payment_data['amount'] / 100, 
+                    status=payment_data['status'],
+                    payment_method=payment_data['method'],
+                    email=payment_data.get('email', ''),
+                    contact=payment_data.get('contact', ''),
+                    order_id=payment_data.get('order_id', ''),
+                    created_at=created_at
+                )
 
             if created:
                 return Response({'status': 'ok', 'message': 'payment_created'}, status=status.HTTP_201_CREATED)

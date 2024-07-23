@@ -61,6 +61,7 @@ class Enrollment(models.Model):
 
 from django.db import models
 from django.db import models
+from django.utils import timezone
 
 class Payments(models.Model):
     payment_id = models.CharField(max_length=100, unique=True)
@@ -70,7 +71,7 @@ class Payments(models.Model):
     email = models.EmailField(blank=True, null=True)
     contact = models.CharField(max_length=20, blank=True, null=True)
     order_id = models.CharField(max_length=100)
-    created_at = models.DateTimeField()
+    created_at = models.DateTimeField(default=timezone.now)  # Ensure timezone-aware datetime
 
     def __str__(self):
         return f"{self.payment_id} - {self.status}"
