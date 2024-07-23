@@ -4,6 +4,7 @@ from rest_framework.decorators import api_view
 from core.models import CourseDetails, CourseCenter, Enrollment
 from .serializer import CourseSerializer
 from Authentication.jwtValidation import *
+from Authentication.jwtValidation import validate_token,getUserDetails
 import datetime
 
 def createCourse(data):
@@ -57,6 +58,53 @@ def ListAllCourses (request) :
         return Response ({'message' : 'Error while listing',
                           'Error' : str(exp)},status=500)
 
+@api_view(['GET','POST'])
+def GetMyCourse(request):
+    validation_response = validate_token(request)
+    if validation_response is not None:
+        return validation_response
+    try:
+        userDetails = getUserDetails(request)  # getting the details of the requested user
+        # if userDetails['type']!='Student':      # chekking weather he is allowed inside this endpoint or not
+            # return Response({'message':"ACCESS DENIED"},status=400)
+        print(userDetails)
+        if not userDetails['user'].is_email_verified:
+            return Response({'message':'Email not verified'},status=400)
+    except Exception as error:
+        print(error)
+        return Response({'message':'Error authorizing the user try logging in again'})
+
+    # Authentication over
+    try:
+        if userDetails['type']=='CourseProvider':
+            courses = CourseDetails.objects.filter(institution=userDetails['user'])
+        elif userDetails['type']=='Student':
+            courses=[]
+            enrollments = Enrollment.objects.filter(student=userDetails['user'])
+            for enrollment in enrollments:
+                course = CourseDetails.objects.get(id=enrollment.course_id)
+                courses.append(course)
+        data_list = []
+
+        for course in courses :
+            start = course.start_date
+            end = course.end_date
+            data = dict()
+            data['id'] = course.id
+            data['course_name'] = course.course_name
+            data['mode'] = course.mode
+            data['start_date'] = start.strftime('%d').lstrip('0') + ' ' + start.strftime('%B')
+            data['end_date'] = end.strftime('%d').lstrip('0') + ' ' + end.strftime('%B')
+            data['price'] = course.price
+            data['discount'] = course.discount
+            data['institution'] = course.institution.institution_name
+            data['location'] = course.location
+
+            data_list.append(data)
+        return Response({'message':'courses sent sucessfully','data':data_list},status=200)
+    except Exception as e:
+        return Response({'message':'Error '+str(e)},status=500)
+
 @api_view(['GET'])
 def getCourse(request,id):
     try:
@@ -95,6 +143,8 @@ def enrollCourse(request):
             userDetails = getUserDetails(request)  # getting the details of the requested user
             if userDetails['type']!='Student':  # chekking weather he is allowed inside this endpoint or not
                 return Response({'message':'Only Students can enroll for a course'},status=400)
+            if not userDetails['user'].is_email_verified:
+                return Response({'message':'Email not verified'},status=400)
         except Exception as error:
             print(error)
             return Response({'message':'Error authorizing the user try logging in again'})   
