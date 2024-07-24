@@ -1,6 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from core.models import Student,CourseCenter,CourseDetails, Enrollment
+from core.chiper import encryptData, decryptData
 from Authentication.jwtValidation import *
 
 @api_view(['GET'])
@@ -47,12 +48,59 @@ def getAllCourses(request):
     except Exception as e:
         return Response({'message':'Error '+str(e)},status=500)
 
-@api_view(['POST'])
+@api_view(['GET'])
 def getAllEnrolledStudents(request,id):
+    validation_response = validate_token(request)
+    if validation_response is not None:
+        return validation_response
     try:
-        return
+        userDetails = getUserDetails(request)  # getting the details of the requested user
+        if userDetails['type']!='CourseProvider':      # chekking weather he is allowed inside this endpoint or not
+            return Response({'message':"ACCESS DENIED"},status=400)
+        print(userDetails)
+        if not userDetails['user'].is_email_verified:
+            return Response({'message':'Email not verified'},status=400)
+    except Exception as error:
+        print(error)
+        return Response({'message':'Error authorizing the user try logging in again'})
+    try:
+        course = CourseDetails.objects.get(id = id)
+        enrollments = Enrollment.objects.filter(course=course)
+        stud_list=[]
+        for en in enrollments:
+            value=dict()
+            if en.course.institution==userDetails['user']:
+                student = en.student
+                value['name'] = student.first_name + " " + student.last_name
+                value['id'] = encryptData(student.id)
+                value['phone_number'] = student.phone_number
+                value['email_id'] = student.email_id
+                value['organization'] = student.organization
+                stud_list.append(value)
+        
+        start = course.start_date
+        end = course.end_date
+        data = dict()
+        data['id'] = course.id
+        data['course_name'] = course.course_name
+        data['domain'] = course.domain
+        data['mode'] = course.mode
+        data['start_date'] = start.strftime('%d').lstrip('0') + ' ' + start.strftime('%B')
+        data['end_date'] = end.strftime('%d').lstrip('0') + ' ' + end.strftime('%B')
+        data['price'] = course.price
+        data['discount'] = course.discount
+        data['institution'] = course.institution.institution_name
+        data['location'] = course.location
+        data['certification'] = course.certification
+        data['no_of_seats'] = course.no_of_seats
+        data['filled_seats'] = course.filled_seats
+        data['description'] = course.description
+        data['expectations'] = course.expectations
+        data['requirements'] = course.requirements
+        return Response({'message':'students details sent sucessfully.','data':data,'students_list':stud_list},status=200)
     except Exception as e:
-        return
+        print(str(e))
+        return Response({'message':'Error sending details.','Error':str(e)},status=500)
 
 @api_view(['GET'])
 def getAllEnrolledCourses(request):

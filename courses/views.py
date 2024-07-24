@@ -2,18 +2,34 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from core.models import CourseDetails, CourseCenter, Enrollment
+from core.chiper import encryptData, decryptData
 from .serializer import CourseSerializer
 from Authentication.jwtValidation import *
 from Authentication.jwtValidation import validate_token,getUserDetails
 import datetime
 
-def createCourse(data):
+def createCourse(request):
+    validation_response = validate_token(request)
+    if validation_response is not None:
+        return validation_response
     try:
-        # data['institution'] = CourseCenter.objects.get(id = data['institution'])
+        userDetails = getUserDetails(request)  # getting the details of the requested user
+        if userDetails['type']!='CourseProvider':      # chekking weather he is allowed inside this endpoint or not
+            return Response({'message':"ACCESS DENIED"},status=400)
+        print(userDetails)
+        if not userDetails['user'].is_email_verified:
+            return Response({'message':'Email not verified'},status=400)
+    except Exception as error:
+        print(error)
+        return Response({'message':'Error authorizing the user try logging in again'})
+    try:
+        data = request.data
+        data['institution'] = userDetails['id']
         serializer = CourseSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return Response({'message':'Course Created Sucessfully'},status=200)
+        print(serializer.errors)
         return Response({'message':'Invalid credentials','error':serializer.errors},status=400)
     except Exception as error:
         return Response({'message':'Error creating a course','error':str(error)},status=500)
@@ -21,7 +37,7 @@ def createCourse(data):
 @api_view(['POST','GET'])
 def ListAllCourses (request) :
     if request.method=='POST':
-        return createCourse(request.data)
+        return createCourse(request)
     try :
         print('all')
 
