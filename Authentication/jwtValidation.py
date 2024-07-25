@@ -83,7 +83,7 @@ def get_or_create_jwt(user_data, user_role, email):
 
 def validate_token(request):
     authorization_header = request.headers.get('Authorization')
-    print(request.headers)
+    # print(request.headers)
     if authorization_header:
         if authorization_header.startswith('Bearer '):
             access_token = authorization_header.split(' ')[1]
