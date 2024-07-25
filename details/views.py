@@ -103,6 +103,28 @@ def getAllEnrolledStudents(request,id):
         return Response({'message':'Error sending details.','Error':str(e)},status=500)
 
 @api_view(['GET'])
+def studentProfile(request):
+    try:
+        id = request.params.get('id')
+        try:
+            student = Student.objects.get(id=decryptData(id))
+        except:
+            return Response({'message':'Student does not exists'},status=404)
+        data = dict()
+        data['name']= student.first_name +' '+ student.last_name
+        data['gender']= student.gender
+        data['dob']= student.dateOfBirth
+        # data['email_id']= student.email_id
+        # data['phone_number']= student.phone_number
+        data['city']= student.city
+        data['organization']= student.organization
+        data['domain']= student.domain
+        return Response({'message':'Details sent sucessfully','data':data},status=200)
+    except Exception as e:
+        print(str(e))
+        return Response({'message':'Error retriving profile details','error':str(e)},status=500)
+
+@api_view(['GET'])
 def getAllEnrolledCourses(request):
     try:
         validation_response = validate_token(request)  # validating the requested user using authorization headder
