@@ -105,9 +105,12 @@ def creteEnrollment(request):
         payment = Payments.objects.filter(payment_id=request.data['payment_id'])
         if not payment.exists():
             return Response({'message':'Payment does not exists'},status=400)
+        payment=payment[0]
         course = CourseDetails.objects.filter(id = request.data['course_id'])
         if not course.exists():
             return Response({'message':'Course does not exists'},status=400)
+        course = course[0]
+        print(course)
         Enrollment.objects.create(
             student=userDetails['user'],
             payment=payment,
@@ -115,4 +118,5 @@ def creteEnrollment(request):
         )
         return Response({'message':'Course Enrolled sucessfully'},status=200)
     except Exception as e:
+        print(str(e))
         return Response({'message':'Error '+str(e)},status=500)

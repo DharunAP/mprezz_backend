@@ -141,14 +141,17 @@ def getAllEnrolledCourses(request):
         courses = Enrollment.objects.filter(student_id = userDetails['id'])
         data = []
         for value in courses:
+            value = value.course
+            start = value.start_date
+            end = value.end_date
             index = dict()
-            index['cource_name'] = value.cource_name
-            index['institution'] = value.institution
-            index['price'] = value.price
-            index['total_seats'] = value.no_of_seats
-            index['certification'] = value.certification
+            index['course_name'] = value.course_name
+            index['institution'] = str(value.institution)
+            index['mode'] = value.mode
             index['location'] = value.location
-            index['filled_seats'] = value.filled_seats
+            index['start_date'] = start.strftime('%d').lstrip('0') + ' ' + start.strftime('%B')
+            index['end_date'] = end.strftime('%d').lstrip('0') + ' ' + end.strftime('%B')
+            print(index)
             data.append(index)
             
         return Response({'message':'success','data':data},status=200)
