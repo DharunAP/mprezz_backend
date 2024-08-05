@@ -113,9 +113,12 @@ def studentProfile(request):
             return Response({'message':'Student does not exists'},status=404)
         data = dict()
         data['name']= student.first_name +' '+ student.last_name
+        data['first_name'] = student.first_name
+        data['last_name'] = student.last_name
         data['gender']= student.gender
         data['dob']= student.dateOfBirth
-        # data['email_id']= student.email_id
+        data['email_id']= student.email_id
+        data['current_role'] = student.current_role
         # data['phone_number']= student.phone_number
         data['city']= student.city
         data['organization']= student.organization
