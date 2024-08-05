@@ -105,7 +105,8 @@ def getAllEnrolledStudents(request,id):
 @api_view(['GET'])
 def studentProfile(request):
     try:
-        id = request.params.get('id')
+        print(request)
+        id = request.GET.get('id')
         try:
             student = Student.objects.get(id=decryptData(id))
         except:
