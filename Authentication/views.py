@@ -7,6 +7,7 @@ from .jwtValidation import *
 from .assets import sendVerificationMail, sendPasswordMail
 from core.chiper import encryptData,decryptData
 from core.routes import VERIFY_MAIL_ROUTE_COURSE_CENTER,VERIFY_MAIL_ROUTE_STUDENT
+from .jwtValidation import validate_token, getUserDetails
 
 @api_view(['POST'])
 def SignupStudent(request):
@@ -151,6 +152,29 @@ def UserLogin(request):
     except Exception as ex:
         print(ex)
         return  Response({'message' : 'Error in Login'}, status = 500)
+
+
+@api_view(['GET'])
+def resend_verification_mail(request):
+    validation_response = validate_token(request)
+    if validation_response is not None:
+        return validation_response
+    try:
+        userDetails = getUserDetails(request)  # getting the details of the requested user
+        # if userDetails['type']!='Student':      # chekking weather he is allowed inside this endpoint or not
+            # return Response({'message':"ACCESS DENIED"},status=400)
+        print(userDetails)
+        if userDetails['user'].is_email_verified:
+            return Response({'message':'Email already verified'},status=400)
+    except Exception as error:
+        print(error)
+        return Response({'message':'Error authorizing the user try logging in again'})
+    try:
+        sendVerificationMail(VERIFY_MAIL_ROUTE_STUDENT+"?id="+encryptData(userDetails['user'].id),userDetails['user'].email_id) # sending the verification mail
+        return Response({'message':'Email send sucessfully.'},status=200)
+    except Exception as e:
+        return Response({'message':'Error resending the vweification mail','Error':str(e)},status=500)
+
 
 @api_view(['POST'])
 def forget_password_student(request):
