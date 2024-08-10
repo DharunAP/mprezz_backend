@@ -173,7 +173,7 @@ def resend_verification_mail(request):
         sendVerificationMail(VERIFY_MAIL_ROUTE_STUDENT+"?id="+encryptData(userDetails['user'].id),userDetails['user'].email_id) # sending the verification mail
         return Response({'message':'Email send sucessfully.'},status=200)
     except Exception as e:
-        return Response({'message':'Error resending the vweification mail','Error':str(e)},status=500)
+        return Response({'message':'Error resending the verification mail','Error':str(e)},status=500)
 
 
 @api_view(['POST'])
