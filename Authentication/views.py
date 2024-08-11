@@ -171,7 +171,7 @@ def resend_verification_mail(request):
         return Response({'message':'Error authorizing the user try logging in again'})
     try:
         sendVerificationMail(VERIFY_MAIL_ROUTE_STUDENT+"?id="+encryptData(userDetails['user'].id),userDetails['user'].email_id) # sending the verification mail
-        return Response({'message':'Email send sucessfully.'},status=200)
+        return Response({'message':'Email sent sucessfully.'},status=200)
     except Exception as e:
         return Response({'message':'Error resending the verification mail','Error':str(e)},status=500)
 
