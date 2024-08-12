@@ -112,11 +112,11 @@ def UserLogin(request):
 
                 else:
                     print("pass wrong")
-                    return Response({'message' : "courseprovider password was wrong"},status = 400)    
+                    return Response({'message' : "Wrong Password"},status = 400)    
 
             else :
                 print('coursepro not found')
-                return Response({'message' : 'Current CourseCenter Not Found'},status = 500)
+                return Response({'message' : 'User Not Found'},status = 500)
 
     
         elif user_role == 'Student':
@@ -140,18 +140,18 @@ def UserLogin(request):
                     }, status= 200)
 
                 else:
-                    return Response({'message' : "student password was wrong"},status = 400)    
+                    return Response({'message' : "Wrong Password"},status = 400)    
 
             else :
-                return Response({'message' : 'Current Student Not Found'},status = 500)
+                return Response({'message' : 'User Not Found'},status = 500)
 
             
         else:
-            return Response({'message' : "User Entered Invalid Role"},status = 500)
+            return Response({'message' : "Invalid Role"},status = 500)
             
     except Exception as ex:
         print(ex)
-        return  Response({'message' : 'Error in Login'}, status = 500)
+        return  Response({'message' : 'Error in Login. Try again Later'}, status = 500)
 
 
 @api_view(['GET'])
