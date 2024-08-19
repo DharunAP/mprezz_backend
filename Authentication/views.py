@@ -2,7 +2,7 @@ from rest_framework.response import Response
 from django.shortcuts import render,redirect
 from rest_framework.decorators import api_view
 from core.models import Student,CourseCenter
-from .Serializers import StudentSerializer,CourseCenterSerializer
+from .Serializers import StudentSerializer,CourseCenterSerializer,AccountSerializer
 from .jwtValidation import *
 from .assets import sendVerificationMail, sendPasswordMail
 from core.chiper import encryptData,decryptData
@@ -13,7 +13,7 @@ from .jwtValidation import validate_token, getUserDetails
 def SignupStudent(request):
     try:
         if Student.objects.filter(email_id=request.data['email_id']).exists():
-            return Response({"message":"EMAIL_ALREADY_EXISTS"},status=400)
+            return Response({"message":"Given email already exixts."},status=400)
         serializer = StudentSerializer(data=request.data)
         valid=serializer.is_valid()
         if valid:
@@ -58,18 +58,27 @@ def VerifyCourseCenter(request):
 @api_view(['POST'])
 def CourseCenterCreation(request):
     try:
-        if CourseCenter.objects.filter(email_id=request.data['email_id']).exists():
-            return Response({"message":"EMAIL_ALREADY_EXISTS"},status=400)
-        serializer = CourseCenterSerializer(data=request.data)
+        if CourseCenter.objects.filter(email_id=request.data['user']['email_id']).exists():
+            return Response({"message":"Given email already exixts."},status=400)
+        serializer = CourseCenterSerializer(data=request.data['user'])
         valid=serializer.is_valid()
         if valid:
             # instance = Student.objects.create(email_id=request.data['email_id'],password=make_password(request.data['password']))
             # instance.save()
             serializer.save()
-            instance = CourseCenter.objects.get(email_id=request.data['email_id'])
+            instance = CourseCenter.objects.get(email_id=request.data['user']['email_id'])
+            # code for acc creation
+            print(instance)
+            acc = request.data['account']
+            acc['CourseCenter'] = instance.id
+            acc_serializer = AccountSerializer(data=acc)
+            if not acc_serializer.is_valid():
+                # CourseCenter.objects.delete(id=instance.id)
+                return Response({'message':'Account details are invalid or missing.','error':str(acc_serializer.errors)},status=400)
+            acc_serializer.save()
             jwt_token = get_or_create_jwt(instance, 'CourseProvider', instance.email_id)
             encryptedID = encryptData(instance.id)
-            sendVerificationMail(VERIFY_MAIL_ROUTE_COURSE_CENTER+"?id="+encryptedID,request.data['email_id']) # sending the verification mail
+            sendVerificationMail(VERIFY_MAIL_ROUTE_COURSE_CENTER+"?id="+encryptedID, instance.email_id) # sending the verification mail
             return Response({"message":"CourseCenter created",'token':str(jwt_token),'id':encryptedID},status=200)
         print(serializer.errors)
         return Response({"message":"Invalid Serializer"},status=400)

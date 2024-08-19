@@ -34,7 +34,16 @@ class CourseCenter(models.Model):
     is_email_verified = models.BooleanField(default=False)
     def __str__(self):
         return str(self.institution_name)
-    
+
+
+class AccountDetails(models.Model):
+    business_name = models.CharField(max_length=100)
+    business_type = models.CharField(max_length=100)
+    account_number = models.CharField(max_length=16)
+    ifsc_code = models.CharField(max_length=11)
+    beneficiary_name = models.CharField(max_length=100)
+    CourseCenter = models.OneToOneField(CourseCenter,on_delete=models.CASCADE)
+
 class CourseDetails (models.Model) :
     course_name = models.CharField(max_length=300)
     domain = models.CharField(max_length=200)
