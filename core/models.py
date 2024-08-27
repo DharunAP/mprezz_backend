@@ -87,3 +87,33 @@ class AuthToken(models.Model) :
     referenceId = models.IntegerField()
     jwt_token = models.CharField(primary_key=True,max_length=500)
     created_date = models.DateField(auto_now_add=True)
+
+class Faculty(models.Model):
+    first_name =  models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    email_id = models.EmailField()
+    qualification = models.CharField(max_length=100)
+    position = models.CharField(max_length=100)
+    institution = models.CharField(max_length=150)
+    place = models.CharField(max_length=100)
+    experience = models.IntegerField()
+    linkedIn_profile = models.TextField(null=True, blank=True)
+
+    address = models.TextField()
+    pin_code = models.CharField(max_length=6)
+    district = models.CharField(max_length=100)
+    country = models.CharField(max_length=100)
+    phone_number = models.CharField(max_length=13)
+    cv_link = models.TextField()
+
+class FacultyRequest(models.Model):
+    institute_name = models.CharField(max_length=100)
+    place = models.CharField(max_length=100)
+    website_link = models.CharField(max_length=100,null=True,blank=True)
+    address = models.TextField()
+
+    # Details of Single Point of contact
+    name = models.CharField(max_length=100)
+    gender = models.CharField(max_length=6,choices=[('male', 'Male'), ('female', 'Female'), ('others', 'Others')])
+    phone_number = models.CharField(max_length=13)
+    email_id = models.EmailField
