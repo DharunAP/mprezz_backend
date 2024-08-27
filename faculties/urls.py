@@ -4,5 +4,6 @@ from core.routes import *
 
 urlpatterns = [
     path('faculty_register/',registerFaculty,name="Register-Faculty"),
-    path('institure_request/',createRequest,name="Institute-Request")
+    path('institure_request/',createRequest,name="Institute-Request"),
+    path('download_data/',download_excel,name="download-data")
 ]

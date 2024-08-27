@@ -2,6 +2,7 @@ import pandas as pd
 import os
 from django.conf import settings
 from rest_framework.decorators import api_view
+from django.http import FileResponse
 from rest_framework.response import Response
 from core.models import Faculty
 from .serializer import FacultySerializer, FacultyRequestSerializer
@@ -36,3 +37,14 @@ def createRequest(request):
         return Response({'message':'Invalid Data','error':ser.errors},status=400)
     except Exception as error:
         return Response({'message':'Error creating the request','Error':str(error)},status=500)
+
+def download_excel(request):
+    # Define the path to the existing Excel file
+    file_path = os.path.join(settings.MEDIA_ROOT, 'faculties.xlsx')
+
+    # Check if the file exists
+    if os.path.exists(file_path):
+        return FileResponse(open(file_path, 'rb'), as_attachment=True, filename='faculties.xlsx')
+    else:
+        # Handle the case where the file doesn't exist
+        return HttpResponse("File not found.", status=404)
