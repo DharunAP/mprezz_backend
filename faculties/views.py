@@ -2,11 +2,13 @@ import pandas as pd
 import os
 from django.conf import settings
 from rest_framework.decorators import api_view
-from django.http import FileResponse
+from django.http import FileResponse,HttpResponse
 from rest_framework.response import Response
 from core.models import Faculty
 from .serializer import FacultySerializer, FacultyRequestSerializer
-
+from django.shortcuts import render
+from dotenv import load_dotenv
+load_dotenv()
 @api_view(['POST'])
 def registerFaculty(request):
     try:
@@ -40,11 +42,16 @@ def createRequest(request):
 
 def download_excel(request):
     # Define the path to the existing Excel file
-    file_path = os.path.join(settings.MEDIA_ROOT, 'faculties.xlsx')
+    if request.method == 'POST':
+        print(request.POST.get('password'),os.environ['PASSWORD'])
+        if request.POST.get('password')==os.environ['PASSWORD']:
+            file_path = os.path.join(settings.MEDIA_ROOT, 'faculties.xlsx')
 
-    # Check if the file exists
-    if os.path.exists(file_path):
-        return FileResponse(open(file_path, 'rb'), as_attachment=True, filename='faculties.xlsx')
-    else:
-        # Handle the case where the file doesn't exist
-        return HttpResponse("File not found.", status=404)
+            # Check if the file exists
+            if os.path.exists(file_path):
+                return FileResponse(open(file_path, 'rb'), as_attachment=True, filename='faculties.xlsx')
+            else:
+                # Handle the case where the file doesn't exist
+                return HttpResponse("File not found.", status=404)
+        return HttpResponse("Invalid Password", status=403)
+    return render(request,'template/getData.html')

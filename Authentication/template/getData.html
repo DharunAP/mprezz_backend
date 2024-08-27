@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Data</title>
+    <style>
+        .card {
+        width: 300px;
+        height: 254px;
+        margin: 0 auto;
+        background: #07182E;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        border-radius: 20px;
+        }
+
+        .card .content {
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        }
+
+        .card input {
+        width: 80%;
+        padding: 8px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        outline: none;
+        font-size: 1em;
+        }
+
+        .card button {
+        width: 70%;
+        padding: 10px;
+        border-radius: 5px;
+        border: none;
+        background-color: #007BFF;
+        color: white;
+        font-size: 1em;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        }
+
+        .card button:hover {
+        background-color: #0056b3;
+        }
+
+        .card::before {
+        content: '';
+        position: absolute;
+        width: 100px;
+        background-image: linear-gradient(180deg, rgb(0, 0, 255), rgb(9, 243, 107));
+        height: 170%;
+        animation: rotBGimg 3s linear infinite;
+        transition: all 0.2s linear;
+        }
+
+        @keyframes rotBGimg {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
+        }
+
+        .card::after {
+        content: '';
+        position: absolute;
+        background: #07182E;
+        inset: 5px;
+        border-radius: 15px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Enter the password to Download the excel sheet.</h2>
+    <div class="card">
+        <form action="" method="post" class="content">
+            {%csrf_token%}
+          <input type="password" name="password" placeholder="Enter password" />
+          <button>Submit</button>
+        </form>
+    </div>
+</body>
+</html>
