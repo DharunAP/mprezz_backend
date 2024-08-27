@@ -42,6 +42,8 @@ class AccountDetails(models.Model):
     account_number = models.CharField(max_length=16)
     ifsc_code = models.CharField(max_length=11)
     beneficiary_name = models.CharField(max_length=100)
+    linked_acount_id = models.CharField(max_length=100, default=None)
+    product_config_id = models.CharField(max_length=100, default=None)
     CourseCenter = models.OneToOneField(CourseCenter,on_delete=models.CASCADE)
 
 class CourseDetails (models.Model) :
