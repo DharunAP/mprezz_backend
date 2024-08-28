@@ -110,7 +110,6 @@ class Faculty(models.Model):
 
 class FacultyRequest(models.Model):
     institute_name = models.CharField(max_length=100)
-    place = models.CharField(max_length=100)
     website_link = models.CharField(max_length=100,null=True,blank=True)
     district = models.CharField(max_length=100)
     address = models.TextField()
