@@ -26,3 +26,23 @@ def sendPasswordMail(url, email_id):
         recipient_list=[email_id,]                              # recipient mail id
     )
     print("mail sent")
+
+def sendRequestMail(email_id):
+    template = get_template('template/request_mail.html').render()
+    send_mail(
+        subject="Request received",  # subject in the sending mail
+        from_email=os.getenv('email_host_id'),                  # sender mail
+        html_message= template,                                 # html template
+        message="Request received",                   # message in the mail
+        recipient_list=[email_id,]                              # recipient mail id
+    )
+
+def notifyRequest(data):
+    template = get_template('template/notify_request.html').render({"name":data['name'],"email":data['email'],'phone':data['phone'],"inst":data['inst'],'web':data['web']})
+    send_mail(
+        subject=f"{data['inst']} has a new request for you",  # subject in the sending mail
+        from_email=os.getenv('email_host_id'),                  # sender mail
+        html_message= template,                                 # html template
+        message="New Request",                   # message in the mail
+        recipient_list=[os.getenv('email_host_id'),]               # recipient mail id
+    )

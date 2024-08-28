@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from core.models import Faculty
 from .serializer import FacultySerializer, FacultyRequestSerializer
 from django.shortcuts import render
+from Authentication.assets import sendRequestMail,notifyRequest
 from dotenv import load_dotenv
 load_dotenv()
 @api_view(['POST'])
@@ -35,6 +36,19 @@ def createRequest(request):
         ser = FacultyRequestSerializer(data = request.data)
         if ser.is_valid():
             ser.save()
+            data = ser.data
+            # print(data)
+            # sendRequestMail(data['email_id'])
+            # print("request")
+            data1 = {
+                'name' : data['name'],
+                'email': data['email_id'],
+                'phone': data['phone_number'],
+                'web'  : data['website_link'] if(data['website_link'] is not None) else '#',
+                'inst' : data['institute_name']
+            }
+            print(data1)
+            notifyRequest(data1)
             return Response({'message':'Request saved sucessfully'},status=200)
         return Response({'message':'Invalid Data','error':ser.errors},status=400)
     except Exception as error:
