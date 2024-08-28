@@ -37,9 +37,7 @@ def createRequest(request):
         if ser.is_valid():
             ser.save()
             data = ser.data
-            # print(data)
-            # sendRequestMail(data['email_id'])
-            # print("request")
+            sendRequestMail(data['email_id'])
             data1 = {
                 'name' : data['name'],
                 'email': data['email_id'],
